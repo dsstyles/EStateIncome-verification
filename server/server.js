@@ -86,6 +86,8 @@ let userRecord;
   await fetchOrCreateUserToken();
 })();
 
+
+// sendIncomeDataToServer
 /**
  * Updates the user record in memory and writes it to a file. In a real
  * application, you'd be writing to a database.
@@ -93,7 +95,11 @@ let userRecord;
  * @param {string | number} val
  */
 const updateUserRecord = async function (key, val) {
-  userRecord[key] = val;
+  if (typeof val === 'object' && val !== null) {
+    userRecord[key] = JSON.parse(JSON.stringify(val));
+  } else {
+    userRecord[key] = val;
+  }
   try {
     const dataToWrite = JSON.stringify(userRecord);
     await fs.writeFile(USER_DATA_FILE, dataToWrite, {
@@ -317,6 +323,35 @@ app.get("/appServer/get_payroll_income", async (req, res, next) => {
     next(error);
   }
 });
+
+const sendIncomeDataToServer = async (incomeData) => {
+  try {
+    const response = await fetch('/appServer/save_income_data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(incomeData),
+    });
+    const result = await response.json();
+    console.log('Income data saved:', result);
+  } catch (error) {
+    console.error('Error saving income data:', error);
+  }
+};
+
+
+app.post('/appServer/save_income_data', async (req, res, next) => {
+  try {
+    const incomeData = req.body;
+    // Save the income data to your user record
+    await updateUserRecord('incomeData', incomeData);
+    res.json({ status: 'success', message: 'Income data saved successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 /**
  * Return income for the user, as inferred from their bank transactions.
