@@ -16,6 +16,8 @@ const FIELD_INCOME_CONNECTED = "incomeConnected";
 const FIELD_PLAID_WEBHOOK_USER_ID = "plaidWebhookUserId";
 const FIELD_USER_ID = "userId";
 
+
+
 let webhookUrl =
   process.env.WEBHOOK_URL || "https://www.example.com/server/receive_webhook";
 
@@ -26,6 +28,15 @@ app.use(bodyParser.json());
 const server = app.listen(APP_PORT, function () {
   console.log(`Server is up and running at http://localhost:${APP_PORT}/`);
 });
+
+
+
+const cors = require('cors');
+
+
+app.use(cors());
+
+// Your other middleware and routes go here
 
 // Set up the Plaid client
 const plaidConfig = new Configuration({
@@ -370,6 +381,60 @@ app.get("/appServer/get_bank_income", async (req, res, next) => {
   }
 });
 
+//const { Configuration: OpenAIConfiguration, OpenAIApi } = require("openai");
+
+
+const OpenAI = require("openai");
+
+// Set up OpenAI configuration
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Function to generate mortgage application using GPT-4
+async function generateMortgageApplication(incomeData) {
+  const prompt = `Based on the following income data, generate a comprehensive mortgage application. Include all relevant fields typically found in a mortgage application, and fill them with appropriate information derived from the income data:
+
+${JSON.stringify(incomeData, null, 2)}
+
+Please format the mortgage application as a JSON object.`;
+
+  const response = await openai.createChatCompletion({
+    model: "gpt-4",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.7,
+    max_tokens: 2000,
+  });
+
+  return JSON.parse(response.data.choices[0].message.content);
+}
+
+// New endpoint to generate mortgage application
+app.post("/appServer/generate_mortgage_application", async (req, res, next) => {
+  try {
+    // Retrieve the saved income data
+    const incomeData = userRecord.incomeData;
+    
+    if (!incomeData) {
+      return res.status(400).json({ error: "No income data found for the user" });
+    }
+
+    // Generate mortgage application
+    const mortgageApplication = await generateMortgageApplication(incomeData);
+
+    // Save the generated mortgage application to the user record
+    await updateUserRecord('mortgageApplication', mortgageApplication);
+
+    res.json({ 
+      status: "success", 
+      message: "Mortgage application generated successfully",
+      mortgageApplication 
+    });
+  } catch (error) {
+    console.error("Error generating mortgage application:", error);
+    next(error);
+  }
+});
 /**
  * A method for updating our item's webhook URL. For the purpose of Income,
  * what's really important is that we're updating the variable in memory that

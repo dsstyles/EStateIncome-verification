@@ -4,6 +4,7 @@ import { Box, Flex, Heading, VStack } from "@chakra-ui/layout";
 import { UserContext, PlaidConnectStatus } from "./components/UserContext";
 import UserStatus from "./components/UserStatus";
 import DebugPanel from "./components/DebugPanel";
+import MortgageApplication from "./components/MortgageApplication";
 
 function App() {
   const [user, setUser] = useState({
@@ -41,6 +42,7 @@ function App() {
           </VStack>
           <UserContext.Provider value={{ user, setUser }}>
             <UserStatus />
+            <MortgageApplication />
           </UserContext.Provider>
         </VStack>
 
