@@ -60,3 +60,70 @@ For more information on Plaid webhooks, check out our [documentation](https://pl
 - Make the error messaging fancier than an alert box
 - Let you know if financing is available so we have a happy ending to our story.
 - (Maybe) Add Socket.io support so our server can tell our client when to fetch document data
+
+
+# How to generate Mortgate Application
+
+## Description
+Having applicant's SSN, Plaid can verify the income of the following 2 types
+1. Payroll income 
+2. Banking income
+
+Generate Mortgate Application similar like the following PDF:
+    https://www.imcu.com/assets/files/cWseIVWq/Mortgage%20Application.pdf
+    
+1. Need yearly income
+2. Plad authentication with bank to authenticate the person
+3. Assets liabilities
+4. ( See bellow )
+To generate a mortgage application, you typically need to provide several key pieces of information. Here's a concise list of the most common requirements:
+
+Personal information:
+
+Full name
+Date of birth
+Social Security number
+Current address
+Phone number and email
+
+
+Employment details:
+
+Current employer
+Job title
+Length of employment
+Annual income
+
+
+Financial information:
+
+Bank account details
+Other assets (investments, property)
+Monthly debts and expenses
+Credit score
+
+
+Property details:
+
+Address of the property you want to purchase
+Estimated property value
+Type of property (e.g., single-family home, condo)
+
+
+Loan specifics:
+
+Desired loan amount
+Down payment amount
+Preferred loan term
+
+
+Additional documentation:
+
+Recent pay stubs
+Tax returns (usually for the past two years)
+Bank statements
+Proof of other income sources (if applicable)
+
+
+
+This list covers the basics, but specific lenders may require additional information. Would you like me to elaborate on any of these points or provide more details about the mortgage application process?

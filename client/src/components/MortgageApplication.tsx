@@ -10,6 +10,9 @@ const MortgageApplication = () => {
     debugger
     setIsLoading(true);
     try {
+      // console.log(first)
+      // const response = await fetch('http://localhost:8080/generate_mortgage_application', {
+
       const response = await fetch('/appServer/generate_mortgage_application', {
         method: 'POST',
         headers: {
